@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface TransactionService {
 
-    Transaction makeTransfer(Account sender, String message, Date createDate, BigDecimal amount, Account receiver);
+    Transaction makeTransfer(Account sender, Account receiver, BigDecimal amount, Date createDate, String message);
 
     List<Transaction> findAllTransaction();
 }

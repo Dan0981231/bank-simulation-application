@@ -1,5 +1,6 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.enums.AccountStatus;
 import com.cydeo.enums.AccountType;
 import com.cydeo.model.Account;
 import com.cydeo.repository.AccountRepository;
@@ -25,6 +26,7 @@ private final AccountRepository accountRepository;
        // we need to create the account object
         Account account = Account.builder().id(UUID.randomUUID())
                 .userId(userId).balance(balance).accountType(accountType).creationDate(createDate)
+                .accountStatus(AccountStatus.ACTIVE)
                 .build();
         // save into database
         // return the object created
