@@ -40,4 +40,32 @@ private final AccountRepository accountRepository;
 
         return AccountRepository.findAll();
     }
+
+    @Override
+    public void deleteAccount(UUID id) {
+        // find the account belongs the id
+       Account account =  accountRepository.findById(id);
+
+        // set status to deleted
+
+        account.setAccountStatus(AccountStatus.DELETED);
+    }
+
+    @Override
+    public void activateAccount(UUID id) {
+        // find the account belongs the id
+        Account account =  accountRepository.findById(id);
+
+        // set status to Active
+
+        account.setAccountStatus(AccountStatus.ACTIVE);
+    }
+
+    @Override
+    public Account findById(UUID id) {
+
+        return accountRepository.findById(id);
+    }
+
+
 }
