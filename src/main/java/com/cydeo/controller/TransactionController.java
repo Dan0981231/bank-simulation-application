@@ -6,6 +6,7 @@ import com.cydeo.model.Transaction;
 import com.cydeo.service.AccountService;
 import com.cydeo.service.TransactionService;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -59,14 +61,16 @@ private final TransactionService transactionService;
     // return transaction/transactions page
 
     @GetMapping("/transaction/{id}")
-    public String deleteAccount(@PathVariable("id") UUID id){
-        // print on the console
+    public String deleteAccount(@PathVariable("id") UUID id, Model model){
         System.out.println(id);
-
-        // we need to find account with this account id and change the status to deleted
-
-
+        // get the list of transactions based on the id and return as a model attribute
+        // findTransactionListByAccountId
+        // service and repository
+       List<Transaction> transactionListById = transactionService.finTransactionListByAccountId(id);
+       model.addAttribute("transactions", transactionListById);
         return "transaction/transactions";
     }
+
+    // go to transaction html file based on the size of the transaction either show "No transaction yet", or transaction table
 
 }
