@@ -2,8 +2,10 @@ package com.cydeo.controller;
 import com.cydeo.enums.AccountType;
 import com.cydeo.model.Account;
 import com.cydeo.service.AccountService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -51,7 +53,12 @@ once user is created return back to the index page
  */
 
     @PostMapping("/create")
-    public String createAccount(@ModelAttribute("account") Account account){
+    public String createAccount(@Valid @ModelAttribute("account") Account account, Model model, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            model.addAttribute("accountTypes", AccountType.values());
+            return "account/create-account";
+        }
+
         System.out.println(account);
         Account newAccount = accountService.createNewAccount(account.getBalance(), new Date(), account.getAccountType(), account.getUserId());
         System.out.println("newAccount = " + newAccount);
