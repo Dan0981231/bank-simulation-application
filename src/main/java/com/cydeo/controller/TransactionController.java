@@ -44,7 +44,7 @@ private final TransactionService transactionService;
     }
 
     @PostMapping("/transfer")
-    private String makeTransfer(@Valid @ModelAttribute("transaction") Transaction transaction, Model model, BindingResult bindingResult) {
+    private String makeTransfer(@Valid @ModelAttribute("transaction") Transaction transaction, BindingResult bindingResult, Model model) {
 
 // I have UUID of accounts but i need to provide account object
         // I need to find accounts based on id that i have and use a s a parameter to complete make transfer

@@ -53,7 +53,7 @@ once user is created return back to the index page
  */
 
     @PostMapping("/create")
-    public String createAccount(@Valid @ModelAttribute("account") Account account, Model model, BindingResult bindingResult){
+    public String createAccount(@Valid @ModelAttribute("account") Account account, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
             model.addAttribute("accountTypes", AccountType.values());
             return "account/create-account";

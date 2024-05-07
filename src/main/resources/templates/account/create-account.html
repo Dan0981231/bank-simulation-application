@@ -43,7 +43,7 @@
                             <div class="form-group blu-margin">
                                 <label for="dropOperator" class="col-form-label">Account Type</label>
                                 <select class="form-control"  id="dropOperator" th:field="*{accountType}">
-                                    <option value="''">Select Account </option>
+                                    <option th:value="''">Select Account </option>
                                     <option th:each="type: ${accountTypes}" th:text="${type.name()}" th:value="${type.name()}"></option>
                                 </select>
                                 <span th:if="${#fields.hasErrors('accountType')}">
