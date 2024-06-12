@@ -1,12 +1,12 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.dto.AccountDTO;
+import com.cydeo.dto.TransactionDTO;
 import com.cydeo.enums.AccountType;
 import com.cydeo.exception.AccountOwnershipException;
 import com.cydeo.exception.BadRequestException;
 import com.cydeo.exception.BalanceNotSufficientException;
 import com.cydeo.exception.UnderConstructionException;
-import com.cydeo.model.Account;
-import com.cydeo.model.Transaction;
 import com.cydeo.repository.AccountRepository;
 import com.cydeo.repository.TransactionRepository;
 import com.cydeo.service.TransactionService;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class TransactionServiceImpl implements TransactionService {
@@ -35,7 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @SneakyThrows
     @Override
-    public Transaction makeTransfer(Account sender, Account receiver, BigDecimal amount, Date createDate, String message) {
+    public TransactionDTO makeTransfer(AccountDTO sender, AccountDTO receiver, BigDecimal amount, Date createDate, String message) {
 
         if (!underConstruction) {
             /**
@@ -53,19 +52,18 @@ public class TransactionServiceImpl implements TransactionService {
              */
             // make transfer
 
-            Transaction transaction = Transaction.builder().amount(amount).sender(sender.getId()).receiver(receiver.getId()).message(message)
-                    .createDate(createDate).build();
+            TransactionDTO transactionDTO = new TransactionDTO();
 
             // save into the db and return it
 
-            return transactionRepository.save(transaction);
+            return transactionRepository.save(transactionDTO);
         }else{
             throw new UnderConstructionException("App is under construction, please try again later");
         }
     }
 
     @SneakyThrows
-    private void executeBalanceAndUpdateIfRequired(BigDecimal amount, Account sender, Account receiver) {
+    private void executeBalanceAndUpdateIfRequired(BigDecimal amount, AccountDTO sender, AccountDTO receiver) {
         if(checkSenderBalance(sender, amount)){
             // update sender and receiver
             // 100 - 80 = 20
@@ -78,13 +76,13 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    private boolean checkSenderBalance(Account sender, BigDecimal amount) {
+    private boolean checkSenderBalance(AccountDTO sender, BigDecimal amount) {
         // verify sender has enough balance to make a transfer
         return sender.getBalance().subtract(amount).compareTo(BigDecimal.ZERO) >=0;
     }
 
     @SneakyThrows
-    private void checkAccountOwnership(Account sender, Account receiver) {
+    private void checkAccountOwnership(AccountDTO sender, AccountDTO receiver) {
         // write if statement if 1 account is saving and user and sender or receiver is not the same. Throw AccountOwnershipException
 
         if (sender.getAccountType().equals(AccountType.SAVING)||receiver.getAccountType().equals(AccountType.SAVING)&&!sender.getUserId().equals(receiver.getUserId())){
@@ -92,7 +90,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    private void validateAccount(Account sender, Account receiver) {
+    private void validateAccount(AccountDTO sender, AccountDTO receiver) {
 
         /**
          * if any of the account is null
@@ -117,24 +115,24 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
-    private void findAccountById(UUID id) {
+    private void findAccountById(Long id) {
         accountRepository.findById(id);
 
     }
 
     @Override
-    public List<Transaction> findAllTransaction() {
+    public List<TransactionDTO> findAllTransaction() {
         return transactionRepository.findAll();
     }
 
     @Override
-    public List<Transaction> lastTenTransactions() {
+    public List<TransactionDTO> lastTenTransactions() {
 
         return transactionRepository.findLastTenTransactions();
     }
 
     @Override
-    public List<Transaction> finTransactionListByAccountId(UUID id) {
+    public List<TransactionDTO> finTransactionListByAccountId(Long id) {
         return transactionRepository.findTransactionListByAccountId(id);
     }
 }

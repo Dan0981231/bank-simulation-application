@@ -1,13 +1,11 @@
 package com.cydeo.controller;
 
-import com.cydeo.enums.AccountType;
-import com.cydeo.model.Account;
-import com.cydeo.model.Transaction;
+import com.cydeo.dto.AccountDTO;
+import com.cydeo.dto.TransactionDTO;
 import com.cydeo.service.AccountService;
 import com.cydeo.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @AllArgsConstructor
@@ -31,7 +28,7 @@ private final TransactionService transactionService;
 
         // what we need to provide to make transfer happen
         // provide empty transaction object
-        model.addAttribute("transaction", Transaction.builder().build());
+        model.addAttribute("transaction", new TransactionDTO());
 
         // we need to provide list of all accounts
         model.addAttribute("accounts", accountService.listOfAccounts());
@@ -44,9 +41,9 @@ private final TransactionService transactionService;
     }
 
     @PostMapping("/transfer")
-    private String makeTransfer(@Valid @ModelAttribute("transaction") Transaction transaction, BindingResult bindingResult, Model model) {
+    private String makeTransfer(@Valid @ModelAttribute("transaction") TransactionDTO transactionDTO, BindingResult bindingResult, Model model) {
 
-// I have UUID of accounts but i need to provide account object
+        // I have UUID of accounts but i need to provide account object
         // I need to find accounts based on id that i have and use a s a parameter to complete make transfer
         if (bindingResult.hasErrors()){
             model.addAttribute("accounts", accountService.listOfAccounts());
@@ -54,10 +51,10 @@ private final TransactionService transactionService;
             return "transaction/make-transfer";
         }
 
-     Account sender = accountService.findById(transaction.getSender());
-        Account receiver =  accountService.findById(transaction.getReceiver());
+        AccountDTO sender = accountService.findById(transactionDTO.getSender().getId());
+        AccountDTO receiver =  accountService.findById(transactionDTO.getReceiver().getId());
 
-      transactionService.makeTransfer(sender, receiver, transaction.getAmount(), new Date(), transaction.getMessage());
+      transactionService.makeTransfer(sender, receiver, transactionDTO.getAmount(), new Date(), transactionDTO.getMessage());
 
         return "redirect:/make-transfer";
     }
@@ -68,13 +65,13 @@ private final TransactionService transactionService;
     // return transaction/transactions page
 
     @GetMapping("/transaction/{id}")
-    public String deleteAccount(@PathVariable("id") UUID id, Model model){
+    public String deleteAccount(@PathVariable("id") Long id, Model model){
         System.out.println(id);
         // get the list of transactions based on the id and return as a model attribute
         // findTransactionListByAccountId
         // service and repository
-       List<Transaction> transactionListById = transactionService.finTransactionListByAccountId(id);
-       model.addAttribute("transactions", transactionListById);
+       List<TransactionDTO> transactionDTOListById = transactionService.finTransactionListByAccountId(id);
+       model.addAttribute("transactions", transactionDTOListById);
         return "transaction/transactions";
     }
 

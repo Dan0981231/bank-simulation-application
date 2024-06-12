@@ -1,29 +1,39 @@
-package com.cydeo.model;
+package com.cydeo.entity;
 
 import com.cydeo.enums.AccountStatus;
 import com.cydeo.enums.AccountType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.UUID;
 
-@Data
-@Builder // dynamic constructor
+@Entity
+@NoArgsConstructor
+@Getter
+@Setter
+@Table(name = "accounts")
 public class Account {
 
-    private UUID id;
-    @NotNull
-    @Positive
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private BigDecimal balance;
-    @NotNull
+
+    @Enumerated(EnumType.STRING)
     private AccountType accountType;
+
+    @Column(columnDefinition = "TIMESTAMP")
     private Date creationDate;
-    @NotNull
+
     private Long userId;
+
+    @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;
 
 

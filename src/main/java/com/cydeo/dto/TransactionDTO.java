@@ -1,19 +1,20 @@
-package com.cydeo.model;
+package com.cydeo.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
-@Data
-@Builder
-public class Transaction {
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class TransactionDTO {
 
     @Positive
     @NotNull
@@ -23,9 +24,9 @@ public class Transaction {
     @Pattern(regexp = "^[a-zA-Z0-9]*$")
     private String message;
     @NotNull
-    private UUID sender;
+    private AccountDTO sender;
     @NotNull
-    private UUID receiver;
+    private AccountDTO receiver;
     private Date createDate;
 
 }
