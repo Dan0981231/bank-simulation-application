@@ -46,7 +46,7 @@ private final TransactionService transactionService;
         // I have UUID of accounts but i need to provide account object
         // I need to find accounts based on id that i have and use a s a parameter to complete make transfer
         if (bindingResult.hasErrors()){
-            model.addAttribute("accounts", accountService.listOfAccounts());
+            model.addAttribute("accounts", accountService.listAllActiveAccounts());
             model.addAttribute("lastTransactions", transactionService.lastTenTransactions());
             return "transaction/make-transfer";
         }

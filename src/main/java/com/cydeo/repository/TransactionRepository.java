@@ -1,7 +1,9 @@
 package com.cydeo.repository;
 import com.cydeo.dto.TransactionDTO;
+import com.cydeo.entity.Account;
 import com.cydeo.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -13,35 +15,8 @@ import java.util.stream.Collectors;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-//    public static List<TransactionDTO> transactionDTOList = new ArrayList<>();
-//
-//    public static List<TransactionDTO> findAll() {
-//        return transactionDTOList;
-//    }
-//
-//
-//    public TransactionDTO save(TransactionDTO transactionDTO) {
-//        transactionDTOList.add(transactionDTO);
-//        return transactionDTO;
-//
-//    }
-//
-//
-//    public List<TransactionDTO> findLastTenTransactions() {
-//
-//        // write a stream that sort the transactions based on creation date and return 10 of them
-//
-//        return transactionDTOList.stream().
-//                sorted(Comparator.comparing(TransactionDTO::getCreateDate).reversed()).
-//                limit(10).
-//                collect(Collectors.toList());
-//    }
-//
-//    public List<TransactionDTO> findTransactionListByAccountId(Long id) {
-//// if account id is used either sender or receiver, return it
-//        return transactionDTOList.stream().filter(transactionDTO -> transactionDTO.getSender().equals(id) ||
-//                        transactionDTO.getReceiver().equals(id))
-//                .collect(Collectors.toList());
-//
-//    }
-    }
+    @Query(value = "Select * from transactions order by create_date desc limit 10", nativeQuery = true)
+    List<Transaction> findLast10Transaction();
+
+     List<Transaction> findAllByReceiver_IdOrSender_Id(Long receiver_id, Long sender_id);
+}
