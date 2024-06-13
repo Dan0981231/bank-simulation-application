@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html xmlns:th="http://www.thymeleaf.org/">
 
 <head>
   <meta charset="utf-8">
@@ -34,19 +34,17 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="accountDTO: ${accountList}">
-            <td th:text="${accountDTO.userId}"></td>
+          <tr th:each="accountDTO : ${accountList}" >
+            <td th:text="${accountDTO.userId}" ></td>
             <td th:text="${accountDTO.accountStatus}"></td>
             <td th:text="${accountDTO.balance}"></td>
             <td th:text="${accountDTO.accountType}"></td>
             <td th:text="${accountDTO.creationDate}"></td>
-            <td >
+            <td>
               <a th:if="${accountDTO.accountStatus.name()=='ACTIVE'}" class="btn btn-danger" th:href="@{/delete/{id}(id=${accountDTO.id})}">Delete</a>
               <a th:if="${accountDTO.accountStatus.name()=='DELETED'}" class="btn btn-success" th:href="@{/activate/{id}(id=${accountDTO.id})}">Activate</a>
-
             </td>
-
-            <td><a class="btn btn-success" th:href="@{/transactionDTO/{id}(id=${accountDTO.id})}">Account Transaction</a></td>
+            <td><a class="btn btn-success" th:href="@{/transaction/{id}(id=${accountDTO.id})}">Account Transaction</a></td>
           </tr>
           </tbody>
         </table>

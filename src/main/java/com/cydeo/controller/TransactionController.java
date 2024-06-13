@@ -21,60 +21,75 @@ import java.util.List;
 @AllArgsConstructor
 public class TransactionController {
 
-private final AccountService accountService;
-private final TransactionService transactionService;
+    private final AccountService accountService;
+    private final TransactionService transactionService;
+
+
     @GetMapping("/make-transfer")
-    private String getMakeTransfer(Model model) {
+    public String getMakeTransfer(Model model){
 
-        // what we need to provide to make transfer happen
-        // provide empty transaction object
-        model.addAttribute("transaction", new TransactionDTO());
-
-        // we need to provide list of all accounts
-        model.addAttribute("accounts", accountService.listOfAccounts());
-
-        // we need list of last 10 transactions to fill the table (complete the business logic)
-
-        model.addAttribute("lastTransactions", transactionService.lastTenTransactions());
+        //what we need to provide to make transfer happen
+        //we need to provide empty transaction object
+        model.addAttribute("transactionDTO", new TransactionDTO());
+        //we need to provide list of all accounts
+        model.addAttribute("accounts",accountService.listAllActiveAccounts());
+        //we need list of last 10 transactions to fill the table(business logic is missing)
+        model.addAttribute("lastTransactions",transactionService.lastTenTransactions());
 
         return "transaction/make-transfer";
     }
 
+    //write a post method that takes transaction object from the UI
+    //complete the transfer and return the same page
     @PostMapping("/transfer")
-    private String makeTransfer(@Valid @ModelAttribute("transaction") TransactionDTO transactionDTO, BindingResult bindingResult, Model model) {
+    public String makeTransfer(@Valid @ModelAttribute("transactionDTO") TransactionDTO transactionDTO, BindingResult bindingResult, Model model){
+        if(bindingResult.hasErrors()){
 
-        // I have UUID of accounts but i need to provide account object
-        // I need to find accounts based on id that i have and use a s a parameter to complete make transfer
-        if (bindingResult.hasErrors()){
-            model.addAttribute("accounts", accountService.listAllActiveAccounts());
-            model.addAttribute("lastTransactions", transactionService.lastTenTransactions());
+            model.addAttribute("accounts",accountService.listAllActiveAccounts());
+            model.addAttribute("lastTransactions",transactionService.lastTenTransactions());
+
             return "transaction/make-transfer";
         }
-
+        //I have UUID of accounts but I need to provide account object.
+        //I need to find the Accounts based on the ID that I have and use a parameter to complete make transfer
         AccountDTO sender = accountService.findById(transactionDTO.getSender().getId());
-        AccountDTO receiver =  accountService.findById(transactionDTO.getReceiver().getId());
-
-      transactionService.makeTransfer(sender, receiver, transactionDTO.getAmount(), new Date(), transactionDTO.getMessage());
+        AccountDTO receiver = accountService.findById(transactionDTO.getReceiver().getId());
+        transactionService.makeTransfer(sender,receiver, transactionDTO.getAmount(),new Date(), transactionDTO.getMessage());
 
         return "redirect:/make-transfer";
     }
-
-    // Task
-    // write a method that gets the account id from index.html and print it in a console
-    //  work on index.html to trigger the end point\// transaction/{id}
-    // return transaction/transactions page
-
+    //TASK
+    //write a method that gets the account id from index.html and print on the console
+    //(work on index.html and here)
+    //transaction/{id}
+    //return transaction/transactions page
     @GetMapping("/transaction/{id}")
-    public String deleteAccount(@PathVariable("id") Long id, Model model){
+    public String getTransactionList(@PathVariable("id") Long id, Model model){
         System.out.println(id);
-        // get the list of transactions based on the id and return as a model attribute
-        // findTransactionListByAccountId
-        // service and repository
-       List<TransactionDTO> transactionDTOListById = transactionService.finTransactionListByAccountId(id);
-       model.addAttribute("transactions", transactionDTOListById);
+        //TASK
+        //get the list of transactions based on the id and return as a model attribute
+        //findTransactionListById
+        List<TransactionDTO> transactionDTOListById = transactionService.finTransactionListByAccountId(id);
+        model.addAttribute("transactions", transactionDTOListById);
+        //(service and repository)
         return "transaction/transactions";
     }
+    //go to transactions.html
+    //based on the size of the transactions either show "no transactions yet" or transactions table
 
-    // go to transaction html file based on the size of the transaction either show "No transaction yet", or transaction table
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
