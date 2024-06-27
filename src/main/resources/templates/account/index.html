@@ -33,7 +33,7 @@
             <th>Balance</th>
             <th>Account Type</th>
             <th>CreationDate</th>
-            <th sec:authorize="hasAnyAuthority('Admin')">Delete</th>
+            <th sec:authorize="hasAnyAuthority('Admin')" >Delete</th>
             <th>Account Transactions</th>
           </tr>
           </thead>
@@ -44,7 +44,7 @@
             <td th:text="${accountDTO.balance}"></td>
             <td th:text="${accountDTO.accountType}"></td>
             <td th:text="${accountDTO.creationDate}"></td>
-            <td sec:authorize="hasAnyAuthority('Admin')">
+            <td sec:authorize="hasAnyAuthority('Admin')" >
               <a th:if="${accountDTO.accountStatus.name()=='ACTIVE'}" class="btn btn-danger" th:href="@{/delete/{id}(id=${accountDTO.id})}">Delete</a>
               <a th:if="${accountDTO.accountStatus.name()=='DELETED'}" class="btn btn-success" th:href="@{/activate/{id}(id=${accountDTO.id})}">Activate</a>
             </td>
@@ -53,7 +53,7 @@
           </tbody>
         </table>
       </div>
-      <p class="my-5"><a th:href="@{/create-form}" class="btn btn-primary">Create Account<i class="fas fa-user-plus ml-2"></i></a></p>
+      <p class="my-5"><a sec:authorize="hasAnyAuthority('Admin')" th:href="@{/create-form}" class="btn btn-primary">Create Account<i class="fas fa-user-plus ml-2"></i></a></p>
       <p class="my-5"><a th:href="@{/make-transfer}" class="btn btn-primary">Make Transfer<i class="fas fa-user-plus ml-2"></i></a></p>
     </div>
   </div>
